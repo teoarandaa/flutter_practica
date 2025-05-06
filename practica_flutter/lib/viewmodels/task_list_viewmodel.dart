@@ -16,42 +16,70 @@ class TaskListViewModel extends ChangeNotifier {
   }
   
   void refreshTasks() {
+    List<Task> newTasks;
+    
     if (_currentFilter == 'all') {
-      _tasks = _taskService.getAllTasks();
+      newTasks = _taskService.getAllTasks();
     } else if (_currentFilter == 'completed') {
-      _tasks = _taskService.getTasksByCompletionStatus(true);
+      newTasks = _taskService.getTasksByCompletionStatus(true);
     } else if (_currentFilter == 'pending') {
-      _tasks = _taskService.getTasksByCompletionStatus(false);
+      newTasks = _taskService.getTasksByCompletionStatus(false);
     } else {
       // Filter by category
-      _tasks = _taskService.getTasksByCategory(_currentFilter);
+      newTasks = _taskService.getTasksByCategory(_currentFilter);
     }
-    notifyListeners();
+    
+    if (_tasksAreDifferent(_tasks, newTasks)) {
+      _tasks = newTasks;
+      notifyListeners();
+    } else {
+      _tasks = newTasks;
+    }
+  }
+  
+  bool _tasksAreDifferent(List<Task> oldTasks, List<Task> newTasks) {
+    if (oldTasks.length != newTasks.length) return true;
+    
+    for (int i = 0; i < oldTasks.length; i++) {
+      if (oldTasks[i].id != newTasks[i].id ||
+          oldTasks[i].isCompleted != newTasks[i].isCompleted ||
+          oldTasks[i].title != newTasks[i].title ||
+          oldTasks[i].description != newTasks[i].description ||
+          oldTasks[i].priority != newTasks[i].priority ||
+          oldTasks[i].category != newTasks[i].category ||
+          oldTasks[i].dueDate.compareTo(newTasks[i].dueDate) != 0) {
+        return true;
+      }
+    }
+    
+    return false;
   }
   
   void setFilter(String filter) {
-    _currentFilter = filter;
-    refreshTasks();
+    if (_currentFilter != filter) {
+      _currentFilter = filter;
+      refreshTasks();
+    }
   }
   
   void addTask(Task task) {
     _taskService.addTask(task);
-    refreshTasks();
+    Future.microtask(() => refreshTasks());
   }
   
   void updateTask(Task task) {
     _taskService.updateTask(task);
-    refreshTasks();
+    Future.microtask(() => refreshTasks());
   }
   
   void deleteTask(String taskId) {
     _taskService.deleteTask(taskId);
-    refreshTasks();
+    Future.microtask(() => refreshTasks());
   }
   
   void toggleTaskCompletion(String taskId) {
     _taskService.toggleTaskCompletion(taskId);
-    refreshTasks();
+    Future.microtask(() => refreshTasks());
   }
   
   List<Task> getTasksByPriority(int priority) {

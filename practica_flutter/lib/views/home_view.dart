@@ -66,10 +66,13 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const TaskCreateView()),
-          ).then((_) => viewModel.refreshTasks());
+          // Usar un microtask para evitar excepciones de Provider durante la navegación
+          Future.microtask(() {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const TaskCreateView()),
+            ).then((_) => viewModel.refreshTasks());
+          });
         },
         child: const Icon(Icons.add),
       ),

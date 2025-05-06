@@ -6,16 +6,33 @@ import '../task_detail_view.dart';
 import 'all_tasks_tab.dart';
 import '../../utils/localizations.dart';
 
-class CompletedTasksTab extends StatelessWidget {
+class CompletedTasksTab extends StatefulWidget {
   const CompletedTasksTab({super.key});
 
   @override
+  State<CompletedTasksTab> createState() => _CompletedTasksTabState();
+}
+
+class _CompletedTasksTabState extends State<CompletedTasksTab> with AutomaticKeepAliveClientMixin {
+  bool _initialized = false;
+  
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_initialized) {
+      final viewModel = Provider.of<TaskListViewModel>(context, listen: false);
+      Future.microtask(() => viewModel.setFilter('completed'));
+      _initialized = true;
+    }
+  }
+  
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     final i18n = AppLocalizations.of(context);
     
     return Consumer<TaskListViewModel>(
       builder: (context, viewModel, child) {
-        viewModel.setFilter('completed');
         final tasks = viewModel.tasks;
         
         if (tasks.isEmpty) {
@@ -74,4 +91,7 @@ class CompletedTasksTab extends StatelessWidget {
       },
     );
   }
+  
+  @override
+  bool get wantKeepAlive => true;
 } 
