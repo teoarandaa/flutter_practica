@@ -1,65 +1,138 @@
-# Task Manager
+# Gestor de Tareas
 
-A Flutter application with hierarchical navigation (Navigator), tabs (TabController), and navigation drawer (Drawer) following MVVM architecture.
+Una aplicación en Flutter para gestionar tareas diarias, implementando navegación jerárquica (Navigator), pestañas (TabController) y panel lateral (Drawer), siguiendo la arquitectura MVVM.
 
-## Features
+## Características
 
-- **MVVM Architecture**: Clean separation of UI (Views), business logic (ViewModels), and data (Models).
-- **Multiple Navigation Types**:
-  - Hierarchical Navigation (Navigator) between screens
-  - Tab Navigation for different task categories
-  - Drawer Navigation for app sections and categories
-- **Task Management**:
-  - Create, read, update, and delete tasks
-  - Categorize tasks
-  - Set priorities
-  - Set due dates
-  - Mark tasks as complete
-- **Modern UI with Material Design**
+- **Arquitectura MVVM**: Clara separación entre interfaz de usuario (Vistas), lógica de negocio (ViewModels) y datos (Modelos).
+- **Múltiples Tipos de Navegación**:
+  - Navegación Jerárquica entre pantallas
+  - Navegación por Pestañas para diferentes estados de tareas (todas, pendientes, completadas)
+  - Navegación con Panel Lateral para secciones y categorías
+- **Gestión Completa de Tareas**:
+  - Crear nuevas tareas
+  - Visualizar detalles de tareas
+  - Editar tareas existentes
+  - Eliminar tareas
+  - Categorizar tareas (trabajo, personal, compras, salud, etc.)
+  - Establecer prioridades (alta, media, baja)
+  - Definir fechas de vencimiento
+  - Marcar tareas como completadas/pendientes
+- **Filtrado de Tareas**:
+  - Por estado (completadas/pendientes)
+  - Por categoría
+- **Interfaz Moderna con Material Design**
+- **Soporte para Múltiples Idiomas**
 
-## Project Structure
+## Estructura del Proyecto
 
 ```
 lib/
-├── models/          # Data models
-├── views/           # UI components
-│   └── tabs/        # Tab views
-├── viewmodels/      # Business logic
-├── services/        # Data services
-├── theme/           # App theme
-└── main.dart        # Entry point
+├── models/           # Modelos de datos
+│   ├── task.dart     # Modelo de tarea
+│   └── category.dart # Modelo de categoría
+├── views/            # Componentes UI
+│   ├── home_view.dart         # Vista principal
+│   ├── task_create_view.dart  # Creación de tareas
+│   ├── task_detail_view.dart  # Detalles de tarea
+│   ├── task_edit_view.dart    # Edición de tareas
+│   ├── category_tasks_view.dart # Tareas por categoría
+│   ├── settings_view.dart     # Configuración
+│   └── tabs/                  # Vistas de pestañas
+│       ├── all_tasks_tab.dart    # Todas las tareas
+│       ├── pending_tasks_tab.dart # Tareas pendientes
+│       └── completed_tasks_tab.dart # Tareas completadas
+├── viewmodels/       # Lógica de negocio
+│   ├── task_list_viewmodel.dart  # ViewModel para listas de tareas
+│   └── task_detail_viewmodel.dart # ViewModel para detalles de tarea
+├── services/         # Servicios de datos
+│   ├── task_service.dart     # Operaciones con tareas
+│   └── language_service.dart # Gestión de idiomas
+├── utils/            # Utilidades
+│   └── localizations.dart # Gestión de traducciones
+├── theme/            # Temas de la aplicación
+│   └── app_theme.dart # Definición del tema
+└── main.dart         # Punto de entrada
 ```
 
-## Getting Started
+## Guía de Instalación
 
-1. Clone the repository
-2. Install dependencies:
+1. Clona el repositorio:
+   ```
+   git clone [URL del repositorio]
+   ```
+2. Navega al directorio del proyecto:
+   ```
+   cd practica_flutter
+   ```
+3. Instala las dependencias:
    ```
    flutter pub get
    ```
-3. Run the app:
+4. Ejecuta la aplicación:
    ```
    flutter run
    ```
 
-## Architecture
+## Arquitectura MVVM
 
-This app follows the MVVM (Model-View-ViewModel) architecture:
+Esta aplicación sigue la arquitectura MVVM (Modelo-Vista-ViewModel):
 
-- **Models**: Define the data structures (Task, Category)
-- **Views**: Handle UI and user interactions
-- **ViewModels**: Manage business logic and state
-- **Services**: Handle data operations
+- **Modelos**: Definen las estructuras de datos (Task, Category)
+  - `Task`: Representa una tarea con propiedades como título, descripción, fecha de vencimiento, categoría, prioridad y estado.
+  - `Category`: Define las categorías disponibles para clasificar tareas.
 
-## Dependencies
+- **Vistas**: Gestionan la interfaz de usuario y las interacciones
+  - Pantallas principales para visualizar, crear y editar tareas
+  - Componentes reutilizables para mostrar tareas
 
-- provider: ^6.1.1 - For state management
-- uuid: ^4.3.3 - For generating unique identifiers
+- **ViewModels**: Manejan la lógica de negocio y el estado
+  - `TaskListViewModel`: Gestiona listas de tareas, filtrado y operaciones básicas
+  - `TaskDetailViewModel`: Gestiona detalles y operaciones sobre una tarea específica
 
-## Development Notes
+- **Servicios**: Manejan operaciones de datos
+  - `TaskService`: Realiza operaciones CRUD (Crear, Leer, Actualizar, Eliminar) sobre tareas
+  - `LanguageService`: Gestiona la configuración de idioma
 
-This application demonstrates:
-- Implementation of MVVM pattern in Flutter
-- Multiple navigation patterns
-- State management with Provider
-- UI design with Material components
+## Flujo de la Aplicación
+
+1. **Pantalla Principal**: Muestra pestañas para todas las tareas, pendientes y completadas
+2. **Panel Lateral**: Permite navegar entre categorías y configuración
+3. **Creación de Tareas**: Formulario para añadir nuevas tareas
+4. **Detalles de Tarea**: Muestra información detallada y opciones para editar o eliminar
+5. **Edición de Tareas**: Modificación de tareas existentes
+
+## Gestión del Estado
+
+La aplicación utiliza el paquete `Provider` para la gestión del estado:
+- Los ViewModels extienden `ChangeNotifier` para notificar a las vistas sobre cambios
+- Las vistas utilizan `Consumer` y `Provider.of` para acceder y reaccionar a los cambios en los ViewModels
+
+## Dependencias
+
+- **provider**: ^6.1.1 - Para gestión del estado
+- **uuid**: ^4.3.3 - Para generar identificadores únicos
+
+## Características para Desarrolladores
+
+Esta aplicación demuestra:
+- Implementación del patrón MVVM en Flutter
+- Múltiples patrones de navegación (jerárquica, pestañas, panel lateral)
+- Gestión del estado con Provider
+- Diseño de UI con componentes Material
+- Internacionalización (i18n)
+- Uso de widgets personalizados
+- Validación de formularios
+
+## Posibles Mejoras Futuras
+
+- Sincronización con backend/nube
+- Notificaciones para tareas próximas a vencer
+- Temas claro/oscuro
+- Vista de calendario
+- Estadísticas de productividad
+- Búsqueda y filtros avanzados
+
+---
+
+Desarrollado como proyecto de aprendizaje para demostrar las capacidades de Flutter en el desarrollo de aplicaciones móviles.
