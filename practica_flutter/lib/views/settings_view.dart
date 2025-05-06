@@ -5,7 +5,7 @@ import '../services/language_service.dart';
 import '../utils/localizations.dart';
 
 class SettingsView extends StatefulWidget {
-  const SettingsView({Key? key}) : super(key: key);
+  const SettingsView({super.key});
 
   @override
   State<SettingsView> createState() => _SettingsViewState();

@@ -4,12 +4,15 @@ import '../../viewmodels/task_list_viewmodel.dart';
 import '../../models/category.dart';
 import '../task_detail_view.dart';
 import 'all_tasks_tab.dart';
+import '../../utils/localizations.dart';
 
 class CompletedTasksTab extends StatelessWidget {
-  const CompletedTasksTab({Key? key}) : super(key: key);
+  const CompletedTasksTab({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+    
     return Consumer<TaskListViewModel>(
       builder: (context, viewModel, child) {
         viewModel.setFilter('completed');
@@ -26,14 +29,14 @@ class CompletedTasksTab extends StatelessWidget {
                   color: Colors.orange.withOpacity(0.5),
                 ),
                 const SizedBox(height: 16),
-                const Text(
-                  '¡No hay tareas completadas!',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                Text(
+                  i18n.text('no_completed_tasks'),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
-                const Text(
-                  'Completa algunas tareas y aparecerán aquí',
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                Text(
+                  i18n.text('complete_some_tasks'),
+                  style: const TextStyle(fontSize: 14, color: Colors.grey),
                 ),
               ],
             ),

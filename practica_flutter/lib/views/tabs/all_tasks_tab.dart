@@ -4,20 +4,23 @@ import '../../viewmodels/task_list_viewmodel.dart';
 import '../../models/task.dart';
 import '../../models/category.dart';
 import '../task_detail_view.dart';
+import '../../utils/localizations.dart';
 
 class AllTasksTab extends StatelessWidget {
-  const AllTasksTab({Key? key}) : super(key: key);
+  const AllTasksTab({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+    
     return Consumer<TaskListViewModel>(
       builder: (context, viewModel, child) {
         viewModel.setFilter('all');
         final tasks = viewModel.tasks;
         
         if (tasks.isEmpty) {
-          return const Center(
-            child: Text('No tasks available. Add a new task!'),
+          return Center(
+            child: Text(i18n.text('no_tasks')),
           );
         }
         
@@ -61,15 +64,17 @@ class TaskListItem extends StatelessWidget {
   final VoidCallback onTaskToggle;
 
   const TaskListItem({
-    Key? key,
+    super.key,
     required this.task,
     required this.category,
     required this.onTaskTap,
     required this.onTaskToggle,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+    
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Column(
@@ -119,7 +124,7 @@ class TaskListItem extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
-                        _getPriorityText(task.priority),
+                        _getPriorityText(task.priority, i18n),
                         style: const TextStyle(color: Colors.white, fontSize: 10),
                       ),
                     ),
@@ -131,7 +136,7 @@ class TaskListItem extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Text(
-                        task.isCompleted ? 'COMPLETADA' : 'PENDIENTE',
+                        task.isCompleted ? i18n.text('task_completed') : i18n.text('task_pending'),
                         style: const TextStyle(color: Colors.white, fontSize: 10),
                       ),
                     ),
@@ -165,12 +170,12 @@ class TaskListItem extends StatelessWidget {
                 child: Center(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Icon(Icons.check_circle, color: Colors.green, size: 18),
-                      SizedBox(width: 8),
+                    children: [
+                      const Icon(Icons.check_circle, color: Colors.green, size: 18),
+                      const SizedBox(width: 8),
                       Text(
-                        'Marcar como completada',
-                        style: TextStyle(color: Colors.green),
+                        i18n.text('mark_as_completed'),
+                        style: const TextStyle(color: Colors.green),
                       ),
                     ],
                   ),
@@ -193,12 +198,12 @@ class TaskListItem extends StatelessWidget {
                 child: Center(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Icon(Icons.refresh, color: Colors.orange, size: 18),
-                      SizedBox(width: 8),
+                    children: [
+                      const Icon(Icons.refresh, color: Colors.orange, size: 18),
+                      const SizedBox(width: 8),
                       Text(
-                        'Marcar como pendiente',
-                        style: TextStyle(color: Colors.orange),
+                        i18n.text('mark_as_pending'),
+                        style: const TextStyle(color: Colors.orange),
                       ),
                     ],
                   ),
@@ -223,16 +228,16 @@ class TaskListItem extends StatelessWidget {
     }
   }
 
-  String _getPriorityText(int priority) {
+  String _getPriorityText(int priority, AppLocalizations i18n) {
     switch (priority) {
       case 3:
-        return 'HIGH';
+        return i18n.text('high');
       case 2:
-        return 'MEDIUM';
+        return i18n.text('medium');
       case 1:
-        return 'LOW';
+        return i18n.text('low');
       default:
-        return 'NONE';
+        return i18n.text('none');
     }
   }
 } 

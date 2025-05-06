@@ -4,12 +4,15 @@ import '../../viewmodels/task_list_viewmodel.dart';
 import '../../models/category.dart';
 import '../task_detail_view.dart';
 import 'all_tasks_tab.dart';
+import '../../utils/localizations.dart';
 
 class PendingTasksTab extends StatelessWidget {
-  const PendingTasksTab({Key? key}) : super(key: key);
+  const PendingTasksTab({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+    
     return Consumer<TaskListViewModel>(
       builder: (context, viewModel, child) {
         viewModel.setFilter('pending');
@@ -26,14 +29,14 @@ class PendingTasksTab extends StatelessWidget {
                   color: Colors.green.withOpacity(0.5),
                 ),
                 const SizedBox(height: 16),
-                const Text(
-                  '¡No hay tareas pendientes!',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                Text(
+                  i18n.text('no_pending_tasks'),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 8),
-                const Text(
-                  'Todas tus tareas están completadas',
-                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                Text(
+                  i18n.text('all_tasks_completed'),
+                  style: const TextStyle(fontSize: 14, color: Colors.grey),
                 ),
               ],
             ),

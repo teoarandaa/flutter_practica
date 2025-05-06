@@ -6,7 +6,7 @@ import '../viewmodels/task_list_viewmodel.dart';
 import 'package:uuid/uuid.dart';
 
 class TaskCreateView extends StatefulWidget {
-  const TaskCreateView({Key? key}) : super(key: key);
+  const TaskCreateView({super.key});
 
   @override
   State<TaskCreateView> createState() => _TaskCreateViewState();

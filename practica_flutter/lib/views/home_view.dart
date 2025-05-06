@@ -8,9 +8,10 @@ import 'tabs/completed_tasks_tab.dart';
 import 'task_create_view.dart';
 import 'category_tasks_view.dart';
 import 'settings_view.dart';
+import '../utils/localizations.dart';
 
 class HomeView extends StatefulWidget {
-  const HomeView({Key? key}) : super(key: key);
+  const HomeView({super.key});
 
   @override
   State<HomeView> createState() => _HomeViewState();
@@ -34,17 +35,19 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+    
     return ChangeNotifierProvider(
       create: (_) => _viewModel,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Task Manager'),
+          title: Text(i18n.text('app_name')),
           bottom: TabBar(
             controller: _tabController,
-            tabs: const [
-              Tab(icon: Icon(Icons.list), text: 'All'),
-              Tab(icon: Icon(Icons.pending), text: 'Pending'),
-              Tab(icon: Icon(Icons.done_all), text: 'Completed'),
+            tabs: [
+              Tab(icon: const Icon(Icons.list), text: i18n.text('all')),
+              Tab(icon: const Icon(Icons.pending), text: i18n.text('pending')),
+              Tab(icon: const Icon(Icons.done_all), text: i18n.text('completed')),
             ],
           ),
         ),
@@ -71,33 +74,35 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
   }
 
   Widget _buildDrawer() {
+    final i18n = AppLocalizations.of(context);
+    
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          const DrawerHeader(
-            decoration: BoxDecoration(
+          DrawerHeader(
+            decoration: const BoxDecoration(
               color: Colors.blue,
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CircleAvatar(
+                const CircleAvatar(
                   radius: 30,
                   backgroundColor: Colors.white,
                   child: Icon(Icons.task_alt, size: 40, color: Colors.blue),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Text(
-                  'Task Manager',
-                  style: TextStyle(
+                  i18n.text('app_name'),
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 24,
                   ),
                 ),
                 Text(
                   'Organize your tasks',
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white70,
                     fontSize: 14,
                   ),
@@ -113,11 +118,11 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
             },
           ),
           const Divider(),
-          const Padding(
-            padding: EdgeInsets.only(left: 16.0, top: 8.0, bottom: 8.0),
+          Padding(
+            padding: const EdgeInsets.only(left: 16.0, top: 8.0, bottom: 8.0),
             child: Text(
-              'Categories',
-              style: TextStyle(
+              i18n.text('category'),
+              style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
                 color: Colors.grey,
@@ -127,7 +132,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
           ...Categories.all.map((category) {
             return ListTile(
               leading: Icon(category.icon, color: category.color),
-              title: Text(category.name),
+              title: Text(i18n.text(category.id)),
               onTap: () {
                 Navigator.pop(context);
                 Navigator.push(
@@ -138,11 +143,11 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                 ).then((_) => _viewModel.refreshTasks());
               },
             );
-          }).toList(),
+          }),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.settings),
-            title: const Text('Settings'),
+            title: Text(i18n.text('settings')),
             onTap: () {
               Navigator.pop(context);
               Navigator.push(

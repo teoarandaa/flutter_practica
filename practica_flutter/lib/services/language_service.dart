@@ -76,6 +76,11 @@ class LanguageService with ChangeNotifier {
       'delete_task_title': 'Delete Task',
       'delete_task_message': 'Are you sure you want to delete this task? This action cannot be undone.',
       'enter_title': 'Please enter a title',
+      
+      // Additional needed keys
+      'tasks': 'Tasks',
+      'no': 'No',
+      'yet': 'yet',
     },
     
     'es': {
@@ -150,6 +155,11 @@ class LanguageService with ChangeNotifier {
       'delete_task_title': 'Eliminar Tarea',
       'delete_task_message': '¿Estás seguro de que quieres eliminar esta tarea? Esta acción no se puede deshacer.',
       'enter_title': 'Por favor, introduce un título',
+      
+      // Additional needed keys
+      'tasks': 'Tareas',
+      'no': 'No hay',
+      'yet': 'aún',
     }
   };
   

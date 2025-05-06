@@ -7,7 +7,7 @@ import '../viewmodels/task_detail_viewmodel.dart';
 class TaskEditView extends StatefulWidget {
   final Task task;
   
-  const TaskEditView({Key? key, required this.task}) : super(key: key);
+  const TaskEditView({super.key, required this.task});
 
   @override
   State<TaskEditView> createState() => _TaskEditViewState();

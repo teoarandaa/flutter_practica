@@ -3,14 +3,17 @@ import 'package:provider/provider.dart';
 import '../viewmodels/task_detail_viewmodel.dart';
 import '../models/category.dart';
 import 'task_edit_view.dart';
+import '../utils/localizations.dart';
 
 class TaskDetailView extends StatelessWidget {
   final String taskId;
   
-  const TaskDetailView({Key? key, required this.taskId}) : super(key: key);
+  const TaskDetailView({super.key, required this.taskId});
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+    
     return ChangeNotifierProvider(
       create: (_) {
         final viewModel = TaskDetailViewModel();
@@ -36,7 +39,7 @@ class TaskDetailView extends StatelessWidget {
           
           return Scaffold(
             appBar: AppBar(
-              title: const Text('Task Details'),
+              title: Text(i18n.text('task_details')),
               actions: [
                 IconButton(
                   icon: const Icon(Icons.edit),
@@ -54,7 +57,7 @@ class TaskDetailView extends StatelessWidget {
                 IconButton(
                   icon: const Icon(Icons.delete),
                   onPressed: () {
-                    _showDeleteConfirmation(context, viewModel);
+                    _showDeleteConfirmation(context, viewModel, i18n);
                   },
                 ),
               ],
@@ -85,7 +88,7 @@ class TaskDetailView extends StatelessWidget {
                         ),
                         const SizedBox(width: 8),
                         Text(
-                          task.isCompleted ? 'TAREA COMPLETADA' : 'TAREA PENDIENTE',
+                          task.isCompleted ? i18n.text('task_completed') : i18n.text('task_pending'),
                           style: TextStyle(
                             color: task.isCompleted ? Colors.green : Colors.orange,
                             fontWeight: FontWeight.bold,
@@ -117,7 +120,7 @@ class TaskDetailView extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              category.name,
+                              i18n.text(category.id),
                               style: TextStyle(
                                 color: category.color,
                                 fontWeight: FontWeight.w500,
@@ -129,13 +132,13 @@ class TaskDetailView extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 24),
-                  _buildInfoCard('Due Date', '${task.dueDate.day}/${task.dueDate.month}/${task.dueDate.year}', Icons.calendar_today),
+                  _buildInfoCard(i18n.text('due_date'), '${task.dueDate.day}/${task.dueDate.month}/${task.dueDate.year}', Icons.calendar_today, context),
                   const SizedBox(height: 16),
-                  _buildInfoCard('Priority', _getPriorityText(task.priority), Icons.flag, color: _getPriorityColor(task.priority)),
+                  _buildInfoCard(i18n.text('priority'), _getPriorityText(task.priority, i18n), Icons.flag, context, color: _getPriorityColor(task.priority)),
                   const SizedBox(height: 24),
-                  const Text(
-                    'Description',
-                    style: TextStyle(
+                  Text(
+                    i18n.text('description'),
+                    style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -171,8 +174,8 @@ class TaskDetailView extends StatelessWidget {
                       icon: Icon(task.isCompleted ? Icons.refresh : Icons.check_circle),
                       label: Text(
                         task.isCompleted
-                            ? 'Marcar como pendiente'
-                            : 'Marcar como completada',
+                            ? i18n.text('mark_as_pending')
+                            : i18n.text('mark_as_completed'),
                         style: const TextStyle(fontSize: 16),
                       ),
                     ),
@@ -186,7 +189,7 @@ class TaskDetailView extends StatelessWidget {
     );
   }
   
-  Widget _buildInfoCard(String title, String value, IconData icon, {Color? color}) {
+  Widget _buildInfoCard(String title, String value, IconData icon, BuildContext context, {Color? color}) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -222,18 +225,18 @@ class TaskDetailView extends StatelessWidget {
     );
   }
   
-  void _showDeleteConfirmation(BuildContext context, TaskDetailViewModel viewModel) {
+  void _showDeleteConfirmation(BuildContext context, TaskDetailViewModel viewModel, AppLocalizations i18n) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete Task'),
-        content: const Text('Are you sure you want to delete this task? This action cannot be undone.'),
+        title: Text(i18n.text('delete_task_title')),
+        content: Text(i18n.text('delete_task_message')),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: const Text('CANCEL'),
+            child: Text(i18n.text('cancel')),
           ),
           TextButton(
             onPressed: () {
@@ -241,7 +244,7 @@ class TaskDetailView extends StatelessWidget {
               Navigator.of(context).pop();
               Navigator.of(context).pop();
             },
-            child: const Text('DELETE'),
+            child: Text(i18n.text('delete')),
           ),
         ],
       ),
@@ -261,16 +264,16 @@ class TaskDetailView extends StatelessWidget {
     }
   }
 
-  String _getPriorityText(int priority) {
+  String _getPriorityText(int priority, AppLocalizations i18n) {
     switch (priority) {
       case 3:
-        return 'HIGH';
+        return i18n.text('high');
       case 2:
-        return 'MEDIUM';
+        return i18n.text('medium');
       case 1:
-        return 'LOW';
+        return i18n.text('low');
       default:
-        return 'NONE';
+        return i18n.text('none');
     }
   }
 } 

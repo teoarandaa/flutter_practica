@@ -5,14 +5,17 @@ import '../viewmodels/task_list_viewmodel.dart';
 import 'task_detail_view.dart';
 import 'task_create_view.dart';
 import 'tabs/all_tasks_tab.dart';
+import '../utils/localizations.dart';
 
 class CategoryTasksView extends StatelessWidget {
   final Category category;
   
-  const CategoryTasksView({Key? key, required this.category}) : super(key: key);
+  const CategoryTasksView({super.key, required this.category});
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+    
     return ChangeNotifierProvider(
       create: (_) => TaskListViewModel(),
       child: Consumer<TaskListViewModel>(
@@ -22,7 +25,7 @@ class CategoryTasksView extends StatelessWidget {
           
           return Scaffold(
             appBar: AppBar(
-              title: Text('${category.name} Tasks'),
+              title: Text('${i18n.text(category.id)} ${i18n.text('tasks')}'),
               backgroundColor: category.color.withOpacity(0.8),
             ),
             body: tasks.isEmpty
@@ -37,7 +40,7 @@ class CategoryTasksView extends StatelessWidget {
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          'No ${category.name} tasks yet',
+                          '${i18n.text('no')} ${i18n.text(category.id)} ${i18n.text('tasks')} ${i18n.text('yet')}',
                           style: const TextStyle(fontSize: 18),
                         ),
                         const SizedBox(height: 8),
@@ -49,7 +52,7 @@ class CategoryTasksView extends StatelessWidget {
                             ).then((_) => viewModel.refreshTasks());
                           },
                           icon: const Icon(Icons.add),
-                          label: const Text('Add Task'),
+                          label: Text(i18n.text('add_task')),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: category.color,
                           ),
