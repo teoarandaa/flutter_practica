@@ -64,6 +64,38 @@ class TaskDetailView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    decoration: BoxDecoration(
+                      color: task.isCompleted 
+                          ? Colors.green.withOpacity(0.2) 
+                          : Colors.orange.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          task.isCompleted 
+                              ? Icons.check_circle 
+                              : Icons.pending_actions,
+                          color: task.isCompleted ? Colors.green : Colors.orange,
+                          size: 24,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          task.isCompleted ? 'TAREA COMPLETADA' : 'TAREA PENDIENTE',
+                          style: TextStyle(
+                            color: task.isCompleted ? Colors.green : Colors.orange,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
                   Row(
                     children: [
                       CircleAvatar(
@@ -78,9 +110,10 @@ class TaskDetailView extends StatelessWidget {
                           children: [
                             Text(
                               task.title,
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.bold,
+                                decoration: task.isCompleted ? TextDecoration.lineThrough : null,
                               ),
                             ),
                             Text(
@@ -92,12 +125,6 @@ class TaskDetailView extends StatelessWidget {
                             ),
                           ],
                         ),
-                      ),
-                      Checkbox(
-                        value: task.isCompleted,
-                        onChanged: (_) {
-                          viewModel.toggleTaskCompletion();
-                        },
                       ),
                     ],
                   ),
@@ -123,7 +150,31 @@ class TaskDetailView extends StatelessWidget {
                     ),
                     child: Text(
                       task.description,
-                      style: const TextStyle(fontSize: 16),
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: task.isCompleted ? Colors.grey : null,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 32),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: task.isCompleted ? Colors.orange : Colors.green,
+                        foregroundColor: Colors.white,
+                      ),
+                      onPressed: () {
+                        viewModel.toggleTaskCompletion();
+                      },
+                      icon: Icon(task.isCompleted ? Icons.refresh : Icons.check_circle),
+                      label: Text(
+                        task.isCompleted
+                            ? 'Marcar como pendiente'
+                            : 'Marcar como completada',
+                        style: const TextStyle(fontSize: 16),
+                      ),
                     ),
                   ),
                 ],

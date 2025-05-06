@@ -16,8 +16,27 @@ class PendingTasksTab extends StatelessWidget {
         final tasks = viewModel.tasks;
         
         if (tasks.isEmpty) {
-          return const Center(
-            child: Text('No pending tasks. Good job!'),
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.check_circle_outline,
+                  size: 64,
+                  color: Colors.green.withOpacity(0.5),
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  '¡No hay tareas pendientes!',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Todas tus tareas están completadas',
+                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                ),
+              ],
+            ),
           );
         }
         

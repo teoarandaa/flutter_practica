@@ -16,8 +16,27 @@ class CompletedTasksTab extends StatelessWidget {
         final tasks = viewModel.tasks;
         
         if (tasks.isEmpty) {
-          return const Center(
-            child: Text('No completed tasks yet. Complete some tasks!'),
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.assignment_late_outlined,
+                  size: 64,
+                  color: Colors.orange.withOpacity(0.5),
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  '¡No hay tareas completadas!',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'Completa algunas tareas y aparecerán aquí',
+                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                ),
+              ],
+            ),
           );
         }
         
