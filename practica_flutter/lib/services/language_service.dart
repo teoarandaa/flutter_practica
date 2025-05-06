@@ -81,6 +81,9 @@ class LanguageService with ChangeNotifier {
       'tasks': 'Tasks',
       'no': 'No',
       'yet': 'yet',
+      
+      // Additional keys
+      'organize_tasks': 'Organize your tasks',
     },
     
     'es': {
@@ -160,6 +163,9 @@ class LanguageService with ChangeNotifier {
       'tasks': 'Tareas',
       'no': 'No hay',
       'yet': 'aún',
+      
+      // Additional keys
+      'organize_tasks': 'Organiza tus tareas',
     }
   };
   

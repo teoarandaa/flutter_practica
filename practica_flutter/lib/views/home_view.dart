@@ -105,7 +105,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                   ),
                 ),
                 Text(
-                  'Organize your tasks',
+                  i18n.text('organize_tasks'),
                   style: const TextStyle(
                     color: Colors.white70,
                     fontSize: 14,
