@@ -20,8 +20,7 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final TaskListViewModel _viewModel = TaskListViewModel();
-
+  
   @override
   void initState() {
     super.initState();
@@ -41,43 +40,43 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
     // Forzar una escucha explícita al servicio de idioma
     Provider.of<LanguageService>(context);
     
-    return ChangeNotifierProvider(
-      create: (_) => _viewModel,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(i18n.text('app_name')),
-          bottom: TabBar(
-            controller: _tabController,
-            tabs: [
-              Tab(icon: const Icon(Icons.list), text: i18n.text('all')),
-              Tab(icon: const Icon(Icons.pending), text: i18n.text('pending')),
-              Tab(icon: const Icon(Icons.done_all), text: i18n.text('completed')),
-            ],
-          ),
-        ),
-        drawer: _buildDrawer(),
-        body: TabBarView(
+    // Obtener el viewModel compartido desde el Provider
+    final viewModel = Provider.of<TaskListViewModel>(context);
+    
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(i18n.text('app_name')),
+        bottom: TabBar(
           controller: _tabController,
-          children: const [
-            AllTasksTab(),
-            PendingTasksTab(),
-            CompletedTasksTab(),
+          tabs: [
+            Tab(icon: const Icon(Icons.list), text: i18n.text('all')),
+            Tab(icon: const Icon(Icons.pending), text: i18n.text('pending')),
+            Tab(icon: const Icon(Icons.done_all), text: i18n.text('completed')),
           ],
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const TaskCreateView()),
-            ).then((_) => _viewModel.refreshTasks());
-          },
-          child: const Icon(Icons.add),
-        ),
+      ),
+      drawer: _buildDrawer(viewModel),
+      body: TabBarView(
+        controller: _tabController,
+        children: const [
+          AllTasksTab(),
+          PendingTasksTab(),
+          CompletedTasksTab(),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const TaskCreateView()),
+          ).then((_) => viewModel.refreshTasks());
+        },
+        child: const Icon(Icons.add),
       ),
     );
   }
 
-  Widget _buildDrawer() {
+  Widget _buildDrawer(TaskListViewModel viewModel) {
     final i18n = AppLocalizations.of(context);
     
     return Drawer(
@@ -144,7 +143,7 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
                   MaterialPageRoute(
                     builder: (context) => CategoryTasksView(category: category),
                   ),
-                ).then((_) => _viewModel.refreshTasks());
+                ).then((_) => viewModel.refreshTasks());
               },
             );
           }),

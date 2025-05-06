@@ -84,6 +84,8 @@ class LanguageService with ChangeNotifier {
       
       // Additional keys
       'organize_tasks': 'Organize your tasks',
+      'task_created': 'Task created',
+      'task_not_found': 'Task not found',
     },
     
     'es': {
@@ -166,6 +168,8 @@ class LanguageService with ChangeNotifier {
       
       // Additional keys
       'organize_tasks': 'Organiza tus tareas',
+      'task_created': 'Tarea creada',
+      'task_not_found': 'Tarea no encontrada',
     }
   };
   

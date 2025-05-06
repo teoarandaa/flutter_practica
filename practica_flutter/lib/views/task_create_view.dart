@@ -41,13 +41,16 @@ class _TaskCreateViewState extends State<TaskCreateView> {
     // Forzar escucha de cambios de idioma
     Provider.of<LanguageService>(context);
     
+    // Obtener referencia al viewModel fuera del método _saveTask
+    final taskListViewModel = Provider.of<TaskListViewModel>(context, listen: false);
+    
     return Scaffold(
       appBar: AppBar(
         title: Text(i18n.text('create_task')),
         actions: [
           IconButton(
             icon: const Icon(Icons.check),
-            onPressed: _saveTask,
+            onPressed: () => _saveTask(i18n, taskListViewModel),
           ),
         ],
       ),
@@ -239,9 +242,7 @@ class _TaskCreateViewState extends State<TaskCreateView> {
     );
   }
   
-  void _saveTask() {
-    final i18n = AppLocalizations.of(context);
-    
+  void _saveTask(AppLocalizations i18n, TaskListViewModel viewModel) {
     if (_titleController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(i18n.text('enter_title'))),
@@ -260,8 +261,12 @@ class _TaskCreateViewState extends State<TaskCreateView> {
       priority: _selectedPriority,
     );
     
-    final viewModel = Provider.of<TaskListViewModel>(context, listen: false);
     viewModel.addTask(newTask);
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('${i18n.text("task_created")}: ${newTask.title}')),
+    );
+    
     Navigator.pop(context);
   }
 } 

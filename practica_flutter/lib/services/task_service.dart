@@ -4,12 +4,17 @@ import '../models/category.dart';
 
 // This simulates a service that would normally interact with a database or API
 class TaskService {
-  final List<Task> _tasks = [];
+  static final TaskService _instance = TaskService._internal();
   
-  // Constructor with sample data
-  TaskService() {
+  factory TaskService() {
+    return _instance;
+  }
+  
+  TaskService._internal() {
     _generateSampleTasks();
   }
+
+  final List<Task> _tasks = [];
   
   // Get all tasks
   List<Task> getAllTasks() {
@@ -55,6 +60,8 @@ class TaskService {
   
   // Generate sample tasks for demonstration
   void _generateSampleTasks() {
+    if (_tasks.isNotEmpty) return; // Only generate if tasks are empty
+    
     final random = Random();
     
     for (int i = 0; i < 15; i++) {

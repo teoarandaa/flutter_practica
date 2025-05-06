@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../models/task.dart';
 import '../models/category.dart';
 import '../viewmodels/task_detail_viewmodel.dart';
+import '../viewmodels/task_list_viewmodel.dart';
 import '../utils/localizations.dart';
 import '../services/language_service.dart';
 
@@ -45,13 +46,17 @@ class _TaskEditViewState extends State<TaskEditView> {
     // Forzar escucha de cambios de idioma
     Provider.of<LanguageService>(context);
     
+    // Obtener referencias a los ViewModels fuera del método _saveTask
+    final detailViewModel = Provider.of<TaskDetailViewModel>(context, listen: false);
+    final listViewModel = Provider.of<TaskListViewModel>(context, listen: false);
+    
     return Scaffold(
       appBar: AppBar(
         title: Text(i18n.text('edit_task')),
         actions: [
           IconButton(
             icon: const Icon(Icons.check),
-            onPressed: _saveTask,
+            onPressed: () => _saveTask(i18n, detailViewModel, listViewModel),
           ),
         ],
       ),
@@ -243,9 +248,11 @@ class _TaskEditViewState extends State<TaskEditView> {
     );
   }
   
-  void _saveTask() {
-    final i18n = AppLocalizations.of(context);
-    
+  void _saveTask(
+    AppLocalizations i18n, 
+    TaskDetailViewModel detailViewModel, 
+    TaskListViewModel listViewModel
+  ) {
     if (_titleController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(i18n.text('enter_title'))),
@@ -261,8 +268,10 @@ class _TaskEditViewState extends State<TaskEditView> {
       priority: _selectedPriority,
     );
     
-    final viewModel = Provider.of<TaskDetailViewModel>(context, listen: false);
-    viewModel.updateTask(updatedTask);
+    // Actualizamos la tarea en ambos ViewModels
+    detailViewModel.updateTask(updatedTask);
+    listViewModel.refreshTasks(); // Aseguramos que la lista se actualice
+    
     Navigator.pop(context);
   }
 } 

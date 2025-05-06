@@ -4,6 +4,7 @@ import 'views/home_view.dart';
 import 'theme/app_theme.dart';
 import 'theme/theme_provider.dart';
 import 'viewmodels/task_list_viewmodel.dart';
+import 'viewmodels/task_detail_viewmodel.dart';
 import 'services/language_service.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -19,6 +20,7 @@ class TaskManagerApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => TaskListViewModel()),
+        ChangeNotifierProvider(create: (_) => TaskDetailViewModel()),
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => LanguageService()),
       ],
