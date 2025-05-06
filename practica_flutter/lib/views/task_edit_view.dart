@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import '../models/task.dart';
 import '../models/category.dart';
 import '../viewmodels/task_detail_viewmodel.dart';
+import '../utils/localizations.dart';
+import '../services/language_service.dart';
 
 class TaskEditView extends StatefulWidget {
   final Task task;
@@ -39,9 +41,13 @@ class _TaskEditViewState extends State<TaskEditView> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = AppLocalizations.of(context);
+    // Forzar escucha de cambios de idioma
+    Provider.of<LanguageService>(context);
+    
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Edit Task'),
+        title: Text(i18n.text('edit_task')),
         actions: [
           IconButton(
             icon: const Icon(Icons.check),
@@ -56,34 +62,34 @@ class _TaskEditViewState extends State<TaskEditView> {
           children: [
             TextField(
               controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: 'Title',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: i18n.text('title'),
+                border: const OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 16),
             TextField(
               controller: _descriptionController,
-              decoration: const InputDecoration(
-                labelText: 'Description',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: i18n.text('description'),
+                border: const OutlineInputBorder(),
                 alignLabelWithHint: true,
               ),
               maxLines: 5,
             ),
             const SizedBox(height: 16),
-            _buildDatePicker(),
+            _buildDatePicker(i18n),
             const SizedBox(height: 16),
-            _buildCategoryDropdown(),
+            _buildCategoryDropdown(i18n),
             const SizedBox(height: 16),
-            _buildPrioritySelector(),
+            _buildPrioritySelector(i18n),
           ],
         ),
       ),
     );
   }
   
-  Widget _buildDatePicker() {
+  Widget _buildDatePicker(AppLocalizations i18n) {
     return InkWell(
       onTap: () async {
         final pickedDate = await showDatePicker(
@@ -112,9 +118,9 @@ class _TaskEditViewState extends State<TaskEditView> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Due Date',
-                  style: TextStyle(
+                Text(
+                  i18n.text('due_date'),
+                  style: const TextStyle(
                     color: Colors.grey,
                     fontSize: 14,
                   ),
@@ -134,7 +140,7 @@ class _TaskEditViewState extends State<TaskEditView> {
     );
   }
   
-  Widget _buildCategoryDropdown() {
+  Widget _buildCategoryDropdown(AppLocalizations i18n) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
@@ -152,7 +158,7 @@ class _TaskEditViewState extends State<TaskEditView> {
                 children: [
                   Icon(category.icon, color: category.color),
                   const SizedBox(width: 16),
-                  Text(category.name),
+                  Text(i18n.text(category.id)),
                 ],
               ),
             );
@@ -169,13 +175,13 @@ class _TaskEditViewState extends State<TaskEditView> {
     );
   }
   
-  Widget _buildPrioritySelector() {
+  Widget _buildPrioritySelector(AppLocalizations i18n) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Priority',
-          style: TextStyle(
+        Text(
+          i18n.text('priority'),
+          style: const TextStyle(
             fontSize: 14,
             color: Colors.grey,
           ),
@@ -183,18 +189,18 @@ class _TaskEditViewState extends State<TaskEditView> {
         const SizedBox(height: 8),
         Row(
           children: [
-            _buildPriorityOption(1, 'Low', Colors.green),
+            _buildPriorityOption(1, i18n.text('low'), Colors.green, i18n),
             const SizedBox(width: 8),
-            _buildPriorityOption(2, 'Medium', Colors.orange),
+            _buildPriorityOption(2, i18n.text('medium'), Colors.orange, i18n),
             const SizedBox(width: 8),
-            _buildPriorityOption(3, 'High', Colors.red),
+            _buildPriorityOption(3, i18n.text('high'), Colors.red, i18n),
           ],
         ),
       ],
     );
   }
   
-  Widget _buildPriorityOption(int priority, String label, Color color) {
+  Widget _buildPriorityOption(int priority, String label, Color color, AppLocalizations i18n) {
     return Expanded(
       child: InkWell(
         onTap: () {
@@ -238,9 +244,11 @@ class _TaskEditViewState extends State<TaskEditView> {
   }
   
   void _saveTask() {
+    final i18n = AppLocalizations.of(context);
+    
     if (_titleController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please enter a title')),
+        SnackBar(content: Text(i18n.text('enter_title'))),
       );
       return;
     }
