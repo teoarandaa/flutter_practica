@@ -18,31 +18,31 @@ class Category {
 class Categories {
   static final List<Category> all = [
     Category(
-      id: '1',
+      id: 'work',
       name: 'Work',
       icon: Icons.work,
       color: Colors.blue,
     ),
     Category(
-      id: '2',
+      id: 'personal',
       name: 'Personal',
       icon: Icons.person,
       color: Colors.green,
     ),
     Category(
-      id: '3',
+      id: 'study',
       name: 'Study',
       icon: Icons.school,
       color: Colors.orange,
     ),
     Category(
-      id: '4',
+      id: 'health',
       name: 'Health',
       icon: Icons.favorite,
       color: Colors.red,
     ),
     Category(
-      id: '5',
+      id: 'shopping',
       name: 'Shopping',
       icon: Icons.shopping_cart,
       color: Colors.purple,

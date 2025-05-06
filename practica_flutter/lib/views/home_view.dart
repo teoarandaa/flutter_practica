@@ -9,6 +9,7 @@ import 'task_create_view.dart';
 import 'category_tasks_view.dart';
 import 'settings_view.dart';
 import '../utils/localizations.dart';
+import '../services/language_service.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -36,6 +37,9 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
+    
+    // Forzar una escucha explícita al servicio de idioma
+    Provider.of<LanguageService>(context);
     
     return ChangeNotifierProvider(
       create: (_) => _viewModel,

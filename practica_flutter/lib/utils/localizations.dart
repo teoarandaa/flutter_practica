@@ -10,7 +10,7 @@ class AppLocalizations {
   
   // Método para obtener el texto traducido
   String text(String key) {
-    final languageService = Provider.of<LanguageService>(context, listen: false);
+    final languageService = Provider.of<LanguageService>(context, listen: true);
     return languageService.translate(key);
   }
   

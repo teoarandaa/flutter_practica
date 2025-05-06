@@ -292,6 +292,9 @@ class _SettingsViewState extends State<SettingsView> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(languageService.getLanguageChangedMessage())),
             );
+            
+            // Navegar al inicio para reconstruir todas las vistas
+            Navigator.of(context).popUntil((route) => route.isFirst);
           }
         },
       ),
@@ -303,6 +306,9 @@ class _SettingsViewState extends State<SettingsView> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(languageService.getLanguageChangedMessage())),
         );
+        
+        // Navegar al inicio para reconstruir todas las vistas
+        Navigator.of(context).popUntil((route) => route.isFirst);
       },
     );
   }
