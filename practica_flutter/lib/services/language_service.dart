@@ -1,8 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// Servicio que gestiona la internacionalización de la aplicación.
+/// 
+/// Este servicio implementa el patrón ChangeNotifier para notificar a los widgets
+/// cuando cambia el idioma de la aplicación. Mantiene un mapa de traducciones
+/// para diferentes idiomas y permite cambiar entre ellos.
 class LanguageService with ChangeNotifier {
+  /// Idioma actual de la aplicación.
+  /// 
+  /// Almacena el nombre del idioma actual (por ejemplo, 'English' o 'Spanish').
   String _currentLanguage = 'en';
+
+  /// Mapa de traducciones para diferentes idiomas.
+  /// 
+  /// Estructura:
+  /// - Clave: código del idioma ('en' o 'es')
+  /// - Valor: mapa de claves de traducción y sus valores traducidos
   final Map<String, Map<String, String>> _localizedValues = {
     'en': {
       // Common
@@ -173,17 +187,35 @@ class LanguageService with ChangeNotifier {
     }
   };
   
+  /// Código del idioma actual.
+  /// 
+  /// Almacena el código del idioma actual ('en' o 'es').
   String _currentCodeLanguage = 'en';
   
+  /// Constructor del servicio de idioma.
+  /// 
+  /// Inicializa el servicio y carga el idioma guardado en las preferencias.
   LanguageService() {
     _loadLanguageFromPrefs();
   }
   
-  // Getters
+  /// Obtiene el idioma actual.
+  /// 
+  /// Devuelve el nombre del idioma actual.
   String get currentLanguage => _currentLanguage;
+
+  /// Obtiene la configuración regional actual.
+  /// 
+  /// Devuelve un objeto Locale que representa el idioma actual.
   Locale get locale => Locale(_currentCodeLanguage);
   
-  // Obtener texto traducido
+  /// Traduce una clave a su valor en el idioma actual.
+  /// 
+  /// [key] - La clave de traducción a buscar.
+  /// 
+  /// Devuelve el texto traducido. Si no se encuentra en el idioma actual,
+  /// intenta usar el inglés como respaldo. Si tampoco está en inglés,
+  /// devuelve la clave original.
   String translate(String key) {
     if (_localizedValues.containsKey(_currentCodeLanguage) && 
         _localizedValues[_currentCodeLanguage]!.containsKey(key)) {
@@ -199,6 +231,10 @@ class LanguageService with ChangeNotifier {
     return key;
   }
   
+  /// Carga el idioma guardado en las preferencias.
+  /// 
+  /// Este método privado se llama durante la inicialización del servicio
+  /// para cargar el idioma guardado previamente.
   void _loadLanguageFromPrefs() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -213,6 +249,11 @@ class LanguageService with ChangeNotifier {
     }
   }
   
+  /// Cambia el idioma de la aplicación.
+  /// 
+  /// [language] - El nombre del nuevo idioma ('English' o 'Spanish').
+  /// 
+  /// Actualiza el idioma actual, guarda la preferencia y notifica a los oyentes.
   Future<void> setLanguage(String language) async {
     if (_currentLanguage != language) {
       _currentLanguage = language;
@@ -228,7 +269,9 @@ class LanguageService with ChangeNotifier {
     }
   }
   
-  // Helper para obtener el mensaje de cambio de idioma
+  /// Obtiene el mensaje de cambio de idioma.
+  /// 
+  /// Devuelve el texto traducido que indica que el idioma ha sido cambiado.
   String getLanguageChangedMessage() {
     return translate('language_changed');
   }
