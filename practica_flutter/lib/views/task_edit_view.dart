@@ -7,6 +7,8 @@ import '../viewmodels/task_list_viewmodel.dart';
 import '../utils/localizations.dart';
 import '../services/language_service.dart';
 
+/// Widget que permite editar una tarea existente.
+/// Utiliza StatefulWidget para manejar el estado de los campos del formulario.
 class TaskEditView extends StatefulWidget {
   final Task task;
   
@@ -17,8 +19,11 @@ class TaskEditView extends StatefulWidget {
 }
 
 class _TaskEditViewState extends State<TaskEditView> {
+  // Controladores para los campos de texto
   late TextEditingController _titleController;
   late TextEditingController _descriptionController;
+  
+  // Variables de estado para los campos seleccionables
   late DateTime _selectedDate;
   late String _selectedCategory;
   late int _selectedPriority;
@@ -26,6 +31,7 @@ class _TaskEditViewState extends State<TaskEditView> {
   @override
   void initState() {
     super.initState();
+    // Inicialización de los controladores y variables con los valores actuales de la tarea
     _titleController = TextEditingController(text: widget.task.title);
     _descriptionController = TextEditingController(text: widget.task.description);
     _selectedDate = widget.task.dueDate;
@@ -35,6 +41,7 @@ class _TaskEditViewState extends State<TaskEditView> {
   
   @override
   void dispose() {
+    // Limpieza de los controladores cuando el widget se destruye
     _titleController.dispose();
     _descriptionController.dispose();
     super.dispose();
@@ -43,10 +50,10 @@ class _TaskEditViewState extends State<TaskEditView> {
   @override
   Widget build(BuildContext context) {
     final i18n = AppLocalizations.of(context);
-    // Forzar escucha de cambios de idioma
+    // Forzar la escucha de cambios de idioma para actualizar la interfaz
     Provider.of<LanguageService>(context);
     
-    // Obtener referencias a los ViewModels fuera del método _saveTask
+    // Obtención de los ViewModels necesarios para la gestión de datos
     final detailViewModel = Provider.of<TaskDetailViewModel>(context, listen: false);
     final listViewModel = Provider.of<TaskListViewModel>(context, listen: false);
     
@@ -54,6 +61,7 @@ class _TaskEditViewState extends State<TaskEditView> {
       appBar: AppBar(
         title: Text(i18n.text('edit_task')),
         actions: [
+          // Botón de guardar en la barra superior
           IconButton(
             icon: const Icon(Icons.check),
             onPressed: () => _saveTask(i18n, detailViewModel, listViewModel),
@@ -65,6 +73,7 @@ class _TaskEditViewState extends State<TaskEditView> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Campo de título
             TextField(
               controller: _titleController,
               decoration: InputDecoration(
@@ -73,6 +82,7 @@ class _TaskEditViewState extends State<TaskEditView> {
               ),
             ),
             const SizedBox(height: 16),
+            // Campo de descripción con múltiples líneas
             TextField(
               controller: _descriptionController,
               decoration: InputDecoration(
@@ -94,9 +104,11 @@ class _TaskEditViewState extends State<TaskEditView> {
     );
   }
   
+  /// Construye el selector de fecha con un diseño personalizado
   Widget _buildDatePicker(AppLocalizations i18n) {
     return InkWell(
       onTap: () async {
+        // Muestra el selector de fecha nativo
         final pickedDate = await showDatePicker(
           context: context,
           initialDate: _selectedDate,
@@ -145,6 +157,7 @@ class _TaskEditViewState extends State<TaskEditView> {
     );
   }
   
+  /// Construye el selector de categoría con un diseño personalizado
   Widget _buildCategoryDropdown(AppLocalizations i18n) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -180,6 +193,7 @@ class _TaskEditViewState extends State<TaskEditView> {
     );
   }
   
+  /// Construye el selector de prioridad con tres opciones: baja, media y alta
   Widget _buildPrioritySelector(AppLocalizations i18n) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -205,6 +219,7 @@ class _TaskEditViewState extends State<TaskEditView> {
     );
   }
   
+  /// Construye una opción individual de prioridad con su propio estilo y comportamiento
   Widget _buildPriorityOption(int priority, String label, Color color, AppLocalizations i18n) {
     return Expanded(
       child: InkWell(
@@ -248,11 +263,14 @@ class _TaskEditViewState extends State<TaskEditView> {
     );
   }
   
+  /// Guarda los cambios realizados en la tarea
+  /// Valida que el título no esté vacío y actualiza la tarea en los ViewModels
   void _saveTask(
     AppLocalizations i18n, 
     TaskDetailViewModel detailViewModel, 
     TaskListViewModel listViewModel
   ) {
+    // Validación del título
     if (_titleController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(i18n.text('enter_title'))),
@@ -260,6 +278,7 @@ class _TaskEditViewState extends State<TaskEditView> {
       return;
     }
     
+    // Creación de una nueva tarea con los valores actualizados
     final updatedTask = widget.task.copyWith(
       title: _titleController.text,
       description: _descriptionController.text,
@@ -268,9 +287,9 @@ class _TaskEditViewState extends State<TaskEditView> {
       priority: _selectedPriority,
     );
     
-    // Actualizamos la tarea en ambos ViewModels
+    // Actualización de la tarea en los ViewModels
     detailViewModel.updateTask(updatedTask);
-    listViewModel.refreshTasks(); // Aseguramos que la lista se actualice
+    listViewModel.refreshTasks(); // Actualización de la lista de tareas
     
     Navigator.pop(context);
   }

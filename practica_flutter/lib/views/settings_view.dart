@@ -1,9 +1,23 @@
+// Importaciones necesarias para la vista de configuración
+// Material Design para la interfaz de usuario
 import 'package:flutter/material.dart';
+// Provider para la gestión del estado de la aplicación
 import 'package:provider/provider.dart';
+// Proveedor de tema para gestionar el modo claro/oscuro
 import '../theme/theme_provider.dart';
+// Servicio de idioma para gestionar la internacionalización
 import '../services/language_service.dart';
+// Utilidades para la internacionalización
 import '../utils/localizations.dart';
 
+/// Widget que muestra la pantalla de configuración de la aplicación.
+/// 
+/// Esta vista permite al usuario:
+/// - Cambiar el tema de la aplicación (claro/oscuro/sistema)
+/// - Cambiar el idioma (español/inglés)
+/// - Ver información sobre la aplicación
+/// 
+/// Utiliza StatefulWidget para manejar el estado de los diálogos y opciones.
 class SettingsView extends StatefulWidget {
   const SettingsView({super.key});
 
@@ -14,17 +28,20 @@ class SettingsView extends StatefulWidget {
 class _SettingsViewState extends State<SettingsView> {
   @override
   Widget build(BuildContext context) {
+    // Obtención de los providers necesarios
     final themeProvider = Provider.of<ThemeProvider>(context);
     final languageService = Provider.of<LanguageService>(context);
     final i18n = AppLocalizations.of(context);
     
     return Scaffold(
+      // Barra superior con título
       appBar: AppBar(
         title: Text(i18n.text('settings')),
       ),
+      // Lista desplazable con las diferentes secciones de configuración
       body: ListView(
         children: [
-          // Sección de tema
+          // Sección de apariencia (tema)
           Container(
             margin: const EdgeInsets.only(top: 20, left: 16, right: 16, bottom: 8),
             child: Text(
@@ -36,6 +53,7 @@ class _SettingsViewState extends State<SettingsView> {
               ),
             ),
           ),
+          // Tarjeta para la opción de tema
           Card(
             margin: const EdgeInsets.symmetric(horizontal: 16),
             child: ListTile(
@@ -60,6 +78,7 @@ class _SettingsViewState extends State<SettingsView> {
               ),
             ),
           ),
+          // Tarjeta para la opción de idioma
           Card(
             margin: const EdgeInsets.symmetric(horizontal: 16),
             child: ListTile(
@@ -84,6 +103,7 @@ class _SettingsViewState extends State<SettingsView> {
               ),
             ),
           ),
+          // Tarjeta para la información de la aplicación
           Card(
             margin: const EdgeInsets.symmetric(horizontal: 16),
             child: ListTile(
@@ -125,6 +145,11 @@ class _SettingsViewState extends State<SettingsView> {
     );
   }
   
+  /// Obtiene el texto traducido correspondiente al modo de tema actual.
+  /// 
+  /// @param themeMode El modo de tema actual (claro/oscuro/sistema)
+  /// @param i18n Instancia de AppLocalizations para las traducciones
+  /// @return El texto traducido del modo de tema
   String _getThemeText(ThemeMode themeMode, AppLocalizations i18n) {
     switch (themeMode) {
       case ThemeMode.light:
@@ -136,6 +161,11 @@ class _SettingsViewState extends State<SettingsView> {
     }
   }
   
+  /// Obtiene el texto traducido correspondiente al idioma actual.
+  /// 
+  /// @param language El idioma actual
+  /// @param i18n Instancia de AppLocalizations para las traducciones
+  /// @return El texto traducido del idioma
   String _getLanguageText(String language, AppLocalizations i18n) {
     switch (language) {
       case 'Spanish':
@@ -145,6 +175,16 @@ class _SettingsViewState extends State<SettingsView> {
     }
   }
   
+  /// Muestra un diálogo para seleccionar el tema de la aplicación.
+  /// 
+  /// El diálogo muestra tres opciones:
+  /// - Sistema: Sigue la configuración del sistema
+  /// - Claro: Tema claro
+  /// - Oscuro: Tema oscuro
+  /// 
+  /// @param context El contexto de construcción
+  /// @param themeProvider El proveedor de tema
+  /// @param i18n Instancia de AppLocalizations para las traducciones
   void _showThemeDialog(BuildContext context, ThemeProvider themeProvider, AppLocalizations i18n) {
     showDialog(
       context: context,
@@ -195,6 +235,20 @@ class _SettingsViewState extends State<SettingsView> {
     );
   }
   
+  /// Construye una opción de tema para el diálogo de selección.
+  /// 
+  /// Cada opción incluye:
+  /// - Un icono representativo
+  /// - Un título
+  /// - Una descripción
+  /// - Un radio button para selección
+  /// 
+  /// @param context El contexto de construcción
+  /// @param title El título de la opción
+  /// @param subtitle La descripción de la opción
+  /// @param icon El icono a mostrar
+  /// @param themeMode El modo de tema que representa esta opción
+  /// @param themeProvider El proveedor de tema
   Widget _buildThemeOption(
     BuildContext context, 
     String title, 
@@ -224,6 +278,20 @@ class _SettingsViewState extends State<SettingsView> {
     );
   }
   
+  /// Muestra un diálogo para seleccionar el idioma de la aplicación.
+  /// 
+  /// El diálogo muestra dos opciones:
+  /// - Inglés
+  /// - Español
+  /// 
+  /// Al cambiar el idioma:
+  /// 1. Se actualiza el idioma en el servicio
+  /// 2. Se muestra un mensaje de confirmación
+  /// 3. Se navega al inicio para reconstruir todas las vistas
+  /// 
+  /// @param context El contexto de construcción
+  /// @param languageService El servicio de idioma
+  /// @param i18n Instancia de AppLocalizations para las traducciones
   void _showLanguageDialog(BuildContext context, LanguageService languageService, AppLocalizations i18n) {
     showDialog(
       context: context,
@@ -267,6 +335,27 @@ class _SettingsViewState extends State<SettingsView> {
     );
   }
   
+  /// Construye una opción de idioma para el diálogo de selección.
+  /// 
+  /// Cada opción incluye:
+  /// - Un icono de idioma
+  /// - Un título traducido
+  /// - El nombre del idioma
+  /// - Un radio button para selección
+  /// 
+  /// Al seleccionar un idioma:
+  /// 1. Se actualiza el idioma en el servicio
+  /// 2. Se cierra el diálogo
+  /// 3. Se muestra un mensaje de confirmación
+  /// 4. Se navega al inicio para reconstruir todas las vistas
+  /// 
+  /// @param context El contexto de construcción
+  /// @param title El título traducido de la opción
+  /// @param subtitle El nombre del idioma
+  /// @param icon El icono a mostrar
+  /// @param language El código del idioma
+  /// @param languageService El servicio de idioma
+  /// @param i18n Instancia de AppLocalizations para las traducciones
   Widget _buildLanguageOption(
     BuildContext context, 
     String title, 

@@ -5,6 +5,9 @@ import '../models/category.dart';
 import 'task_edit_view.dart';
 import '../utils/localizations.dart';
 
+/// Widget que muestra los detalles de una tarea específica.
+/// Permite ver toda la información de la tarea, marcarla como completada/pendiente,
+/// editarla o eliminarla.
 class TaskDetailView extends StatefulWidget {
   final String taskId;
   
@@ -15,20 +18,24 @@ class TaskDetailView extends StatefulWidget {
 }
 
 class _TaskDetailViewState extends State<TaskDetailView> {
+  // Future para manejar la carga inicial de la tarea
   late Future<void> _loadTaskFuture;
   
   @override
   void initState() {
     super.initState();
+    // Inicializar la carga de la tarea al crear el widget
     _loadTaskFuture = _loadTask();
   }
   
+  /// Carga la tarea desde el ViewModel
+  /// Espera a que el frame termine de construirse para evitar problemas de contexto
   Future<void> _loadTask() async {
     // Esperar a que el frame termine de construirse
     await Future.delayed(Duration.zero);
     if (!mounted) return;
     
-    // Cargar la tarea
+    // Cargar la tarea usando el ViewModel
     final viewModel = Provider.of<TaskDetailViewModel>(context, listen: false);
     viewModel.loadTask(widget.taskId);
   }
@@ -41,6 +48,7 @@ class _TaskDetailViewState extends State<TaskDetailView> {
       appBar: AppBar(
         title: Text(i18n.text('task_details')),
         actions: [
+          // Botón de eliminar que solo se muestra si la tarea existe
           Consumer<TaskDetailViewModel>(
             builder: (context, viewModel, child) {
               if (viewModel.task == null) return const SizedBox.shrink();
@@ -55,6 +63,7 @@ class _TaskDetailViewState extends State<TaskDetailView> {
           ),
         ],
       ),
+      // FutureBuilder para manejar el estado de carga inicial
       body: FutureBuilder(
         future: _loadTaskFuture,
         builder: (context, snapshot) {
@@ -64,6 +73,7 @@ class _TaskDetailViewState extends State<TaskDetailView> {
             );
           }
           
+          // Consumer para reconstruir la UI cuando cambia la tarea
           return Consumer<TaskDetailViewModel>(
             builder: (context, viewModel, child) {
               final task = viewModel.task;
@@ -74,6 +84,7 @@ class _TaskDetailViewState extends State<TaskDetailView> {
                 );
               }
               
+              // Obtener la categoría correspondiente a la tarea
               final category = Categories.all.firstWhere(
                 (cat) => cat.id == task.category,
                 orElse: () => Categories.all.first,
@@ -84,6 +95,7 @@ class _TaskDetailViewState extends State<TaskDetailView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Indicador de estado de la tarea (completada/pendiente)
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.symmetric(vertical: 12),
@@ -116,6 +128,7 @@ class _TaskDetailViewState extends State<TaskDetailView> {
                       ),
                     ),
                     const SizedBox(height: 16),
+                    // Encabezado con título y categoría
                     Row(
                       children: [
                         CircleAvatar(
@@ -149,10 +162,13 @@ class _TaskDetailViewState extends State<TaskDetailView> {
                       ],
                     ),
                     const SizedBox(height: 24),
+                    // Información de fecha de vencimiento
                     _buildInfoCard(i18n.text('due_date'), '${task.dueDate.day}/${task.dueDate.month}/${task.dueDate.year}', Icons.calendar_today, context),
                     const SizedBox(height: 16),
+                    // Información de prioridad
                     _buildInfoCard(i18n.text('priority'), _getPriorityText(task.priority, i18n), Icons.flag, context, color: _getPriorityColor(task.priority)),
                     const SizedBox(height: 24),
+                    // Descripción de la tarea
                     Text(
                       i18n.text('description'),
                       style: const TextStyle(
@@ -177,6 +193,7 @@ class _TaskDetailViewState extends State<TaskDetailView> {
                       ),
                     ),
                     const SizedBox(height: 32),
+                    // Botón para marcar como completada/pendiente
                     SizedBox(
                       width: double.infinity,
                       height: 50,
@@ -204,6 +221,7 @@ class _TaskDetailViewState extends State<TaskDetailView> {
           );
         },
       ),
+      // Botón flotante para editar la tarea
       floatingActionButton: Consumer<TaskDetailViewModel>(
         builder: (context, viewModel, child) {
           if (viewModel.task == null) return const SizedBox.shrink();
@@ -229,6 +247,7 @@ class _TaskDetailViewState extends State<TaskDetailView> {
     );
   }
   
+  /// Construye una tarjeta de información con un título, valor e icono
   Widget _buildInfoCard(String title, String value, IconData icon, BuildContext context, {Color? color}) {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -265,6 +284,7 @@ class _TaskDetailViewState extends State<TaskDetailView> {
     );
   }
   
+  /// Obtiene el color correspondiente a la prioridad de la tarea
   Color _getPriorityColor(int priority) {
     switch (priority) {
       case 3:
@@ -278,6 +298,7 @@ class _TaskDetailViewState extends State<TaskDetailView> {
     }
   }
 
+  /// Obtiene el texto traducido correspondiente a la prioridad de la tarea
   String _getPriorityText(int priority, AppLocalizations i18n) {
     switch (priority) {
       case 3:
@@ -291,6 +312,7 @@ class _TaskDetailViewState extends State<TaskDetailView> {
     }
   }
 
+  /// Muestra un diálogo de confirmación antes de eliminar la tarea
   void _showDeleteConfirmation(BuildContext context, AppLocalizations i18n) {
     final viewModel = Provider.of<TaskDetailViewModel>(context, listen: false);
     
