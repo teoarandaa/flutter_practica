@@ -51,7 +51,8 @@ lib/
 ├── utils/            # Utilidades
 │   └── localizations.dart # Gestión de traducciones
 ├── theme/            # Temas de la aplicación
-│   └── app_theme.dart # Definición del tema
+│   ├── app_theme.dart # Definición del tema
+│   └── theme_provider.dart # Proveedor de tema
 └── main.dart         # Punto de entrada
 ```
 
