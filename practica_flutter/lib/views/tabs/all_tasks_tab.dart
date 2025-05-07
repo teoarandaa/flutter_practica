@@ -6,6 +6,17 @@ import '../../models/category.dart';
 import '../task_detail_view.dart';
 import '../../utils/localizations.dart';
 
+/// Widget que muestra la pestaña de todas las tareas.
+/// 
+/// Esta pestaña muestra una lista de todas las tareas disponibles, independientemente
+/// de su estado de completado. Implementa AutomaticKeepAliveClientMixin para mantener
+/// su estado cuando se cambia entre pestañas.
+/// 
+/// Características principales:
+/// - Muestra todas las tareas sin filtrar por estado
+/// - Permite navegar al detalle de cada tarea
+/// - Permite marcar/desmarcar tareas como completadas
+/// - Mantiene su estado al cambiar entre pestañas
 class AllTasksTab extends StatefulWidget {
   const AllTasksTab({super.key});
 
@@ -13,7 +24,21 @@ class AllTasksTab extends StatefulWidget {
   State<AllTasksTab> createState() => _AllTasksTabState();
 }
 
+/// Estado del widget AllTasksTab.
+/// 
+/// Gestiona el ciclo de vida de la pestaña y mantiene su estado entre cambios
+/// de pestaña usando AutomaticKeepAliveClientMixin.
+/// 
+/// Responsabilidades:
+/// - Inicializar y mantener el filtro de todas las tareas
+/// - Gestionar la actualización de la lista de tareas
+/// - Manejar la navegación al detalle de tareas
+/// - Controlar el estado de completado de las tareas
 class _AllTasksTabState extends State<AllTasksTab> with AutomaticKeepAliveClientMixin {
+  /// Indica si el widget ha sido inicializado.
+  /// 
+  /// Se utiliza para controlar la inicialización del filtro y evitar
+  /// múltiples inicializaciones innecesarias.
   bool _initialized = false;
   
   @override
@@ -42,35 +67,42 @@ class _AllTasksTabState extends State<AllTasksTab> with AutomaticKeepAliveClient
       builder: (context, viewModel, child) {
         final tasks = viewModel.tasks;
         
+        // Mostrar mensaje cuando no hay tareas
         if (tasks.isEmpty) {
           return Center(
             child: Text(i18n.text('no_tasks')),
           );
         }
         
+        // Construir la lista de tareas
         return ListView.builder(
           itemCount: tasks.length,
           itemBuilder: (context, index) {
             final task = tasks[index];
+            // Obtener la categoría correspondiente a la tarea
             final category = Categories.all.firstWhere(
               (cat) => cat.id == task.category,
               orElse: () => Categories.all.first,
             );
             
+            // Renderizar cada tarea usando el widget TaskListItem
             return TaskListItem(
               task: task,
               category: category,
               onTaskTap: () {
+                // Navegar a la vista de detalle de la tarea
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => TaskDetailView(taskId: task.id),
                   ),
                 ).then((_) {
+                  // Actualizar la lista al volver de la vista de detalle
                   viewModel.refreshTasks();
                 });
               },
               onTaskToggle: () {
+                // Cambiar el estado de completado de la tarea
                 viewModel.toggleTaskCompletion(task.id);
               },
             );
@@ -84,10 +116,41 @@ class _AllTasksTabState extends State<AllTasksTab> with AutomaticKeepAliveClient
   bool get wantKeepAlive => true;
 }
 
+/// Widget que representa un elemento individual de la lista de tareas.
+/// 
+/// Muestra la información de una tarea en una tarjeta, incluyendo:
+/// - Icono y color de la categoría
+/// - Título y descripción
+/// - Fecha de vencimiento
+/// - Nivel de prioridad
+/// - Estado de completado
+/// - Botones para marcar como completada/pendiente
+/// 
+/// Características:
+/// - Diseño responsivo que se adapta al contenido
+/// - Indicadores visuales de estado y prioridad
+/// - Interacciones para ver detalles y cambiar estado
+/// - Soporte para internacionalización
 class TaskListItem extends StatelessWidget {
+  /// La tarea a mostrar.
+  /// 
+  /// Contiene toda la información necesaria para mostrar la tarea,
+  /// incluyendo título, descripción, fecha, categoría y estado.
   final Task task;
+  
+  /// La categoría de la tarea.
+  /// 
+  /// Define el icono y color que se mostrarán junto a la tarea.
   final Category category;
+  
+  /// Callback que se ejecuta al tocar la tarea.
+  /// 
+  /// Navega a la vista de detalle de la tarea.
   final VoidCallback onTaskTap;
+  
+  /// Callback que se ejecuta al cambiar el estado de completado.
+  /// 
+  /// Alterna el estado de completado de la tarea.
   final VoidCallback onTaskToggle;
 
   const TaskListItem({
@@ -242,29 +305,42 @@ class TaskListItem extends StatelessWidget {
     );
   }
 
+  /// Obtiene el color correspondiente al nivel de prioridad.
+  /// 
+  /// [priority] - El nivel de prioridad (1-3).
+  /// 
+  /// Devuelve:
+  /// - Rojo para prioridad alta (3)
+  /// - Naranja para prioridad media (2)
+  /// - Verde para prioridad baja (1)
   Color _getPriorityColor(int priority) {
     switch (priority) {
       case 3:
         return Colors.red;
       case 2:
         return Colors.orange;
-      case 1:
-        return Colors.green;
       default:
-        return Colors.grey;
+        return Colors.green;
     }
   }
 
+  /// Obtiene el texto traducido para el nivel de prioridad.
+  /// 
+  /// [priority] - El nivel de prioridad (1-3).
+  /// [i18n] - El objeto de localización.
+  /// 
+  /// Devuelve el texto traducido correspondiente al nivel de prioridad:
+  /// - "Alta" para prioridad 3
+  /// - "Media" para prioridad 2
+  /// - "Baja" para prioridad 1
   String _getPriorityText(int priority, AppLocalizations i18n) {
     switch (priority) {
       case 3:
         return i18n.text('high');
       case 2:
         return i18n.text('medium');
-      case 1:
-        return i18n.text('low');
       default:
-        return i18n.text('none');
+        return i18n.text('low');
     }
   }
 } 

@@ -6,6 +6,18 @@ import '../task_detail_view.dart';
 import 'all_tasks_tab.dart';
 import '../../utils/localizations.dart';
 
+/// Widget que muestra la lista de tareas pendientes.
+/// 
+/// Esta pestaña muestra todas las tareas que aún no han sido completadas.
+/// Implementa AutomaticKeepAliveClientMixin para mantener su estado cuando
+/// se cambia entre pestañas.
+/// 
+/// Características principales:
+/// - Filtra y muestra solo las tareas pendientes
+/// - Permite navegar al detalle de cada tarea
+/// - Permite marcar tareas como completadas
+/// - Mantiene su estado al cambiar entre pestañas
+/// - Muestra un mensaje informativo cuando no hay tareas pendientes
 class PendingTasksTab extends StatefulWidget {
   const PendingTasksTab({super.key});
 
@@ -13,7 +25,20 @@ class PendingTasksTab extends StatefulWidget {
   State<PendingTasksTab> createState() => _PendingTasksTabState();
 }
 
+/// Estado del widget PendingTasksTab.
+/// 
+/// Gestiona el ciclo de vida de la pestaña y mantiene su estado entre cambios
+/// de pestaña usando AutomaticKeepAliveClientMixin. Se encarga de:
+/// - Inicializar y mantener el filtro de tareas pendientes
+/// - Mostrar una lista de tareas pendientes
+/// - Mostrar un mensaje cuando no hay tareas pendientes
+/// - Gestionar la navegación al detalle de tareas
+/// - Controlar el estado de completado de las tareas
 class _PendingTasksTabState extends State<PendingTasksTab> with AutomaticKeepAliveClientMixin {
+  /// Indica si el widget ya ha sido inicializado.
+  /// 
+  /// Se utiliza para controlar la inicialización del filtro y evitar
+  /// múltiples inicializaciones innecesarias.
   bool _initialized = false;
   
   @override
@@ -42,6 +67,7 @@ class _PendingTasksTabState extends State<PendingTasksTab> with AutomaticKeepAli
       builder: (context, viewModel, child) {
         final tasks = viewModel.tasks;
         
+        // Si no hay tareas pendientes, mostrar un mensaje informativo
         if (tasks.isEmpty) {
           return Center(
             child: Column(
@@ -67,29 +93,35 @@ class _PendingTasksTabState extends State<PendingTasksTab> with AutomaticKeepAli
           );
         }
         
+        // Construir la lista de tareas pendientes
         return ListView.builder(
           itemCount: tasks.length,
           itemBuilder: (context, index) {
             final task = tasks[index];
+            // Obtener la categoría correspondiente a la tarea
             final category = Categories.all.firstWhere(
               (cat) => cat.id == task.category,
               orElse: () => Categories.all.first,
             );
             
+            // Renderizar cada tarea usando el widget TaskListItem
             return TaskListItem(
               task: task,
               category: category,
               onTaskTap: () {
+                // Navegar a la vista de detalle de la tarea
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => TaskDetailView(taskId: task.id),
                   ),
                 ).then((_) {
+                  // Actualizar la lista al volver de la vista de detalle
                   viewModel.refreshTasks();
                 });
               },
               onTaskToggle: () {
+                // Cambiar el estado de completado de la tarea
                 viewModel.toggleTaskCompletion(task.id);
               },
             );
