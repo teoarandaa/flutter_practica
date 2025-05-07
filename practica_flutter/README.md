@@ -132,7 +132,4 @@ Esta aplicación demuestra:
 - Vista de calendario
 - Estadísticas de productividad
 - Búsqueda y filtros avanzados
-
 ---
-
-Desarrollado como proyecto de aprendizaje para demostrar las capacidades de Flutter en el desarrollo de aplicaciones móviles.
