@@ -79,7 +79,18 @@ class TaskListViewModel extends ChangeNotifier {
   
   void toggleTaskCompletion(String taskId) {
     _taskService.toggleTaskCompletion(taskId);
-    Future.microtask(() => refreshTasks());
+    // Forzar una actualización inmediata para asegurar que todas las vistas se actualicen
+    if (_currentFilter == 'all') {
+      _tasks = _taskService.getAllTasks();
+    } else if (_currentFilter == 'completed') {
+      _tasks = _taskService.getTasksByCompletionStatus(true);
+    } else if (_currentFilter == 'pending') {
+      _tasks = _taskService.getTasksByCompletionStatus(false);
+    } else {
+      // Filter by category
+      _tasks = _taskService.getTasksByCategory(_currentFilter);
+    }
+    notifyListeners();
   }
   
   List<Task> getTasksByPriority(int priority) {

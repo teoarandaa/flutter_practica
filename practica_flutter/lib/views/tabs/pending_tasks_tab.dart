@@ -19,11 +19,18 @@ class _PendingTasksTabState extends State<PendingTasksTab> with AutomaticKeepAli
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (!_initialized) {
-      final viewModel = Provider.of<TaskListViewModel>(context, listen: false);
-      Future.microtask(() => viewModel.setFilter('pending'));
-      _initialized = true;
-    }
+    final viewModel = Provider.of<TaskListViewModel>(context, listen: false);
+    // Siempre establecer el filtro al entrar en esta pestaña, no solo la primera vez
+    Future.microtask(() => viewModel.setFilter('pending'));
+    _initialized = true;
+  }
+  
+  @override
+  void didUpdateWidget(PendingTasksTab oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Actualizar el filtro cada vez que la pestaña se vuelva a mostrar
+    final viewModel = Provider.of<TaskListViewModel>(context, listen: false);
+    Future.microtask(() => viewModel.setFilter('pending'));
   }
   
   @override

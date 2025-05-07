@@ -25,10 +25,32 @@ class _HomeViewState extends State<HomeView> with SingleTickerProviderStateMixin
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+    
+    // Agregar un listener para detectar cambios de pestaña
+    _tabController.addListener(_handleTabSelection);
+  }
+  
+  void _handleTabSelection() {
+    if (_tabController.indexIsChanging || _tabController.index != _tabController.previousIndex) {
+      // Obtener el viewModel y actualizar según la pestaña seleccionada
+      final viewModel = Provider.of<TaskListViewModel>(context, listen: false);
+      switch (_tabController.index) {
+        case 0:
+          viewModel.setFilter('all');
+          break;
+        case 1:
+          viewModel.setFilter('pending');
+          break;
+        case 2:
+          viewModel.setFilter('completed');
+          break;
+      }
+    }
   }
 
   @override
   void dispose() {
+    _tabController.removeListener(_handleTabSelection);
     _tabController.dispose();
     super.dispose();
   }

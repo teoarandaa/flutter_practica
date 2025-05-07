@@ -30,8 +30,18 @@ class TaskDetailViewModel extends ChangeNotifier {
   void toggleTaskCompletion() {
     if (_task != null) {
       _taskService.toggleTaskCompletion(_task!.id);
+      
+      // Actualizar el estado local inmediatamente
       _task = _task!.copyWith(isCompleted: !_task!.isCompleted);
+      
+      // Notificar a los oyentes que la tarea ha cambiado
       notifyListeners();
+      
+      // Usar un delay mínimo para permitir que el estado se propague correctamente
+      Future.delayed(const Duration(milliseconds: 50), () {
+        // Esta llamada garantiza que todas las vistas asociadas con TaskListViewModel se actualicen
+        notifyListeners();
+      });
     }
   }
   

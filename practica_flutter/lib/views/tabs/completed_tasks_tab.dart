@@ -19,11 +19,18 @@ class _CompletedTasksTabState extends State<CompletedTasksTab> with AutomaticKee
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (!_initialized) {
-      final viewModel = Provider.of<TaskListViewModel>(context, listen: false);
-      Future.microtask(() => viewModel.setFilter('completed'));
-      _initialized = true;
-    }
+    final viewModel = Provider.of<TaskListViewModel>(context, listen: false);
+    // Siempre establecer el filtro al entrar en esta pestaña, no solo la primera vez
+    Future.microtask(() => viewModel.setFilter('completed'));
+    _initialized = true;
+  }
+  
+  @override
+  void didUpdateWidget(CompletedTasksTab oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Actualizar el filtro cada vez que la pestaña se vuelva a mostrar
+    final viewModel = Provider.of<TaskListViewModel>(context, listen: false);
+    Future.microtask(() => viewModel.setFilter('completed'));
   }
   
   @override
