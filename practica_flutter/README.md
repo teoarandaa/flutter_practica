@@ -134,5 +134,5 @@ Esta aplicación demuestra:
 - Búsqueda y filtros avanzados
 
 ---
-
-Desarrollado como proyecto de aprendizaje para demostrar las capacidades de Flutter en el desarrollo de aplicaciones móviles.
+## Icono
+<img width="399" alt="Captura de pantalla 2025-05-07 a las 16 20 49" src="https://github.com/user-attachments/assets/3a8a0e61-a833-40af-8a0a-093ef8998900" />
